@@ -1,0 +1,90 @@
+{
+  "aac": [
+    "C",
+    "Q"
+  ],
+  "apaac": [
+    "Pc1.N",
+    "Pc1.A",
+    "Pc1.C"
+  ],
+  "ctd": [
+    "prop2.G2.residue25",
+    "prop1.G3.residue0",
+    "prop7.G3.residue0",
+    "prop7.G1.residue25",
+    "prop5.G2.residue0",
+    "prop1.G3.residue25",
+    "prop5.G2.residue25",
+    "prop6.G1.residue75",
+    "prop5.G3.residue0",
+    "prop6.G1.residue50",
+    "prop5.G1.residue0",
+    "prop2.G2.residue50",
+    "prop2.G3.residue0",
+    "prop1.G2.residue0",
+    "prop6.G1.residue0",
+    "prop2.G2.residue75",
+    "prop2.G1.residue25",
+    "secondarystruct.Group2",
+    "prop6.G3.residue25",
+    "prop7.G1.residue50",
+    "prop7.G3.residue100",
+    "prop7.G1.residue0",
+    "prop5.G3.residue100",
+    "prop1.G1.residue25",
+    "prop6.G3.residue0",
+    "prop5.G3.residue75",
+    "prop1.G3.residue50",
+    "secondarystruct.Group1",
+    "prop2.G2.residue0"
+  ],
+  "ctriad": [
+    "VS362",
+    "VS261",
+    "VS131",
+    "VS314",
+    "VS552",
+    "VS236",
+    "VS215",
+    "VS136",
+    "VS722",
+    "VS652",
+    "VS216",
+    "VS327"
+  ],
+  "dpc": [
+    "SL",
+    "CS",
+    "QL",
+    "CC",
+    "VE",
+    "HC",
+    "CY",
+    "VC",
+    "RV",
+    "GY",
+    "EI",
+    "GA",
+    "LA",
+    "ID",
+    "VR",
+    "DI",
+    "AL",
+    "QA",
+    "CF",
+    "SC",
+    "CE"
+  ],
+  "geary": [
+    "GEARY_CIDH920105.lag1"
+  ],
+  "mb": [
+    "MB_CHAM820102.lag3",
+    "MB_CHAM820102.lag30"
+  ],
+  "qso": [
+    "Schneider.Xd.28",
+    "Schneider.Xd.27"
+  ]
+}
