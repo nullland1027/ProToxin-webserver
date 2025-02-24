@@ -78,15 +78,15 @@ def gen_features(fasta_file_path):
     fg.gen_aaindex()
     fg.combine_features()
     fg.feature_select()
-    return fg.df_total
+    return fg.get_data_in_dataframe()
 
 
 def predict_toxin(fasta_file_path):
     with st.status("Running...", expanded=True) as status:
         st.write("Fetching data...")
-        time.sleep(2)  # TODO
+        time.sleep(0.5)
         st.write("Feature generating...")
-        feature_df = gen_features(fasta_file_path)  # TODO
+        feature_df = gen_features(fasta_file_path)
         st.write("Model predicting...")
         time.sleep(1)
         status.update(
