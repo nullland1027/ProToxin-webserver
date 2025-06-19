@@ -14,5 +14,5 @@ class Success:
 
 
 class Error:
-    INVALID_FILE = "❌ Invalid FASTA file."
+    INVALID_FILE = "❌ Invalid FASTA file. Please check the format and content."
     INVALID_AA = "❌ Invalid amino acids found in the sequence. Should remove BJOUXZ."

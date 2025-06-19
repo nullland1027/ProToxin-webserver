@@ -17,12 +17,12 @@ from tabs.about import show_about
 
 # 自定义CSS来控制页面宽度
 def set_page_container_style():
-    # 自定义CSS来设置页面宽度为70%，并居中显示
+    # 自定义CSS来设置页面宽度百分比，并居中显示
     st.markdown(
         """
         <style>
         .block-container {
-            max-width: 70% !important;
+            max-width: 61.8% !important;
             padding-top: 2rem;
             padding-right: 1rem;
             padding-left: 1rem;
@@ -84,10 +84,14 @@ def is_valid_sequence(fasta_file_path):
 
 
 def show_sequence(sequences_dict):
-    st.dataframe(pd.DataFrame({
-        "Protein ID": list(sequences_dict["pid"]),
-        "Sequence": list(sequences_dict["seq"])
-    }))
+    st.dataframe(
+        pd.DataFrame({
+            "Protein ID": list(sequences_dict["pid"]),
+            "Sequence": list(sequences_dict["seq"])
+        }),
+        use_container_width=True,  # 使表格使用容器的全宽
+        hide_index=True,  # 隐藏索引以使表格更整洁
+    )
 
 
 def gen_features(fasta_file_path):
