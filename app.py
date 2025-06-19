@@ -14,21 +14,20 @@ import streamlit as st
 from tabs.disclaimer import show_disclaimer
 from tabs.about import show_about
 
-
-# 自定义CSS来控制页面宽度
+GOLDEN_RATIO_PERCENTAGE = 61.8
 def set_page_container_style():
     # 自定义CSS来设置页面宽度百分比，并居中显示
     st.markdown(
-        """
+        f"""
         <style>
-        .block-container {
-            max-width: 61.8% !important;
+        .block-container {{
+            max-width: {GOLDEN_RATIO_PERCENTAGE}% !important;
             padding-top: 2rem;
             padding-right: 1rem;
             padding-left: 1rem;
             padding-bottom: 3rem;
             margin: 0 auto;
-        }
+        }}
         </style>
         """,
         unsafe_allow_html=True,
