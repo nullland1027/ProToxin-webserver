@@ -1,4 +1,6 @@
 # Byte-compiled / optimized / DLL files
+results.txt
+tmp/
 data/
 __pycache__/
 *.py[cod]

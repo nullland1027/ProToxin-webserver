@@ -10,6 +10,30 @@ from compute.features import FGenerator
 from compute.predictor import do_predict
 import streamlit as st
 
+# 导入页面内容
+from tabs.disclaimer import show_disclaimer
+from tabs.about import show_about
+
+
+# 自定义CSS来控制页面宽度
+def set_page_container_style():
+    # 自定义CSS来设置页面宽度百分比，并居中显示
+    st.markdown(
+        """
+        <style>
+        .block-container {
+            max-width: 61.8% !important;
+            padding-top: 2rem;
+            padding-right: 1rem;
+            padding-left: 1rem;
+            padding-bottom: 3rem;
+            margin: 0 auto;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 
 def save_uploaded_file(uploaded_file):
     """保存上传的文件到本地，并返回文件路径"""
@@ -60,10 +84,14 @@ def is_valid_sequence(fasta_file_path):
 
 
 def show_sequence(sequences_dict):
-    st.dataframe(pd.DataFrame({
-        "Protein ID": list(sequences_dict["pid"]),
-        "Sequence": list(sequences_dict["seq"])
-    }))
+    st.dataframe(
+        pd.DataFrame({
+            "Protein ID": list(sequences_dict["pid"]),
+            "Sequence": list(sequences_dict["seq"])
+        }),
+        use_container_width=True,  # 使表格使用容器的全宽
+        hide_index=True,  # 隐藏索引以使表格更整洁
+    )
 
 
 def gen_features(fasta_file_path):
@@ -103,10 +131,26 @@ def show_result(df):
         st.dataframe(df, use_container_width=True)
 
 
-if __name__ == '__main__':
-    st.set_page_config(layout="centered")  # Layout settings
-    st.title('ProToxin Prediction')
-    os.makedirs(cfg.FASTA_SAVE_DIR, exist_ok=True)
+def welcome_section():
+    """显示欢迎信息的函数"""
+    st.title('Welcome to ProToxin')
+
+    st.markdown("""
+    ProToxin is a machine learning-based predictor for detecting protein toxins from sequences. 
+    It is based on a machine learning algorithm, gradient boosting. ProToxin is a fast and efficient 
+    method and is freely available. It can be used for small and large numbers of sequences.
+
+    ProToxin was developed in the groups of Prof. Yang Yang (add here the address) and 
+    Prof. Mauno Vihinen, Protein Structure and Bioinformatics Research group, Lund University, Sweden.
+    """)
+
+    st.divider()
+
+
+def prediction_page():
+    """预测功能页面"""
+    # 添加页面标题
+    st.subheader('Protein Toxin Prediction')
 
     # 使用 session_state 初始化持久化变量
     if "fasta_file_path" not in st.session_state:
@@ -154,3 +198,34 @@ if __name__ == '__main__':
                 show_result(res)
             except Exception as e:
                 st.error(f"Error: {str(e)}")
+
+
+def home_page():
+    """主页内容"""
+    welcome_section()
+    prediction_page()
+
+
+if __name__ == '__main__':
+    # 设置页面配置
+    st.set_page_config(
+        page_title="ProToxin",
+        layout="centered",  # 改回居中布局，我们将通过自定义CSS控制具体宽度
+    )
+
+    # 应用自定义宽度设置
+    set_page_container_style()
+
+    os.makedirs(cfg.FASTA_SAVE_DIR, exist_ok=True)
+
+    # 使用Streamlit原生的选项卡组件创建导航
+    tab1, tab2, tab3 = st.tabs(["Home", "Disclaimer", "About"])
+
+    with tab1:
+        home_page()
+
+    with tab2:
+        show_disclaimer()
+
+    with tab3:
+        show_about()
