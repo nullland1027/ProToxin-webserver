@@ -6,15 +6,14 @@ import pandas as pd
 from config.config import Config as cfg
 from config.config import Warn, Success, Error
 from utils import fasta
-from compute.features import FGenerator
-from compute.predictor import do_predict
 import streamlit as st
 
 # 导入页面内容
 from tabs.disclaimer import show_disclaimer
 from tabs.about import show_about
+from tabs.prediction import show_prediction
 
-GOLDEN_RATIO_PERCENTAGE = 61.8
+GOLDEN_RATIO_PERCENTAGE = 50
 def set_page_container_style():
     # 自定义CSS来设置页面宽度百分比，并居中显示
     st.markdown(
@@ -28,181 +27,114 @@ def set_page_container_style():
             padding-bottom: 3rem;
             margin: 0 auto;
         }}
+        /* 自定义选项卡样式 */
+        .st-cb {{
+            font-size: 18px !important;
+        }}
+        /* 选项卡文本样式 */
+        div[data-testid="stVerticalBlock"] div[role="tab"] {{
+            font-size: 20px !important;
+            font-weight: 500;
+        }}
+        /* 选项卡列表容器居中 */
+        div[role="tablist"] {{
+            display: flex;
+            justify-content: center;
+        }}
+        /* 选项卡之间的间距 */
+        button[role="tab"] {{
+            margin: 0 1rem;
+        }}
+        /* 选中的选项卡样式 */
+        button[role="tab"][aria-selected="true"] {{
+            background-color: rgba(0, 104, 201, 0.1);
+            border-radius: 5px;
+        }}
+        /* 页脚样式 */
+        footer {{
+            visibility: visible;
+            width: 100% !important;  /* 使用100%宽度，与内容区域一致 */
+            margin-top: 5rem;
+            padding-top: 1.5rem;
+            padding-bottom: 1rem;
+            text-align: center;
+            border-top: 1px solid #e1e4e8;
+            position: relative; /* 改为相对定位，不浮动 */
+            bottom: 0;
+        }}
         </style>
         """,
         unsafe_allow_html=True,
     )
 
 
-def save_uploaded_file(uploaded_file):
-    """保存上传的文件到本地，并返回文件路径"""
-    if uploaded_file is None:
-        return None
-    file_path = os.path.join(cfg.FASTA_SAVE_DIR, uploaded_file.name)
-    # 保存文件
-    with open(file_path, "wb") as f:
-        f.write(uploaded_file.getbuffer())  # 写入字节数据
-    return file_path
-
-
-def save_txt_to_file(file_name, content):
-    """将内容写入本地文件"""
-    file_path = os.path.join(cfg.FASTA_SAVE_DIR, file_name)
-    with open(file_path, "w", encoding="utf-8") as f:
-        f.write(content + "\n")
-    return file_path
-
-
-def is_valid_sequence(fasta_file_path):
-    if fasta_file_path:  # FASTA file has been saved in the server no matter file upload or text input
-        try:
-            sequences_dict = fasta.read_fasta(fasta_file_path)
-            # 1. Empty or invalid string
-            if len(sequences_dict["pid"]) == 0:
-                st.error(Error.INVALID_FILE)
-                st.stop()
-
-            st.text(f"Number of sequences: {len(sequences_dict['pid'])}")
-            # 2. Check sequence length
-            if fasta.contain_short_sequence(sequences_dict):
-                st.warning(Warn.TOO_SHORT_SEQUENCE)
-                sequences_dict = None  # Reset sequences_dict
-                st.stop()
-
-            # 3. Check ambiguous amino acids
-            invalid_aa, seq_id = fasta.contain_invalid_aa(sequences_dict)
-            if invalid_aa:
-                st.error(f"{Error.INVALID_AA} Found in sequence: {seq_id}")
-                sequences_dict = None  # Reset sequences_dict
-                st.stop()
-        except Exception as e:
-            st.error(f"Error reading file: {str(e)}")
-            st.stop()
-        return sequences_dict
-    return None
-
-
-def show_sequence(sequences_dict):
-    st.dataframe(
-        pd.DataFrame({
-            "Protein ID": list(sequences_dict["pid"]),
-            "Sequence": list(sequences_dict["seq"])
-        }),
-        use_container_width=True,  # 使表格使用容器的全宽
-        hide_index=True,  # 隐藏索引以使表格更整洁
-    )
-
-
-def gen_features(fasta_file_path):
-    fg = FGenerator(
-        fasta_file=fasta_file_path,
-        feature_selection_file="config/fs_88_2024-10-23-10:06:41.json",
-        protr_features_file="config/selected_protr_features.json",
-        protein_db_path="data/uniprot_sprot_db_20240911/uniprot_sprot_db"
-    )
-    fg.gen_protr()
-    fg.gen_pssm()
-    fg.gen_aaindex()
-    fg.combine_features()
-    fg.feature_select()
-    return fg.get_data_in_dataframe()
-
-
-def predict_toxin(fasta_file_path):
-    with st.status("Running...", expanded=True) as status:
-        st.write("Fetching data...")
-        time.sleep(0.5)
-        st.write("Feature generating...")
-        feature_df = gen_features(fasta_file_path)
-        st.write("Model predicting...")
-        time.sleep(1)
-        status.update(
-            label="Prediction complete!", state="complete", expanded=False
-        )
-        st.toast('Finished!', icon='🎉')
-        return feature_df
-
-
-def show_result(df):
-    # 创建 3 列，并将 DataFrame 放在中间列
-    col1, col2, col3 = st.columns([1, 18, 1])
-    with col2:
-        st.dataframe(df, use_container_width=True)
-
-
 def welcome_section():
     """显示欢迎信息的函数"""
-    st.title('Welcome to ProToxin')
+    # Logo和标题区域 - 使用columns进行水平排列
+    logo_col, title_col = st.columns([1, 4])
 
-    st.markdown("""
-    ProToxin is a machine learning-based predictor for detecting protein toxins from sequences. 
-    It is based on a machine learning algorithm, gradient boosting. ProToxin is a fast and efficient 
-    method and is freely available. It can be used for small and large numbers of sequences.
+    with logo_col:
+        # Logo位置
+        # 可以使用本地Logo图片
+        # st.image("path/to/your/logo.png", use_container_width=True)
 
-    ProToxin was developed in the groups of Prof. Yang Yang (add here the address) and 
-    Prof. Mauno Vihinen, Protein Structure and Bioinformatics Research group, Lund University, Sweden.
-    """)
+        # 或使用占位图作为示例
+        st.image("https://placehold.co/150x150?text=LOGO", use_container_width=True)
 
-    st.divider()
+    with title_col:
+        st.title('Welcome to ProToxin')
 
+    # 创建两列布局展示主要内容
+    col1, col2 = st.columns([3, 2])
 
-def prediction_page():
-    """预测功能页面"""
-    # 添加页面标题
-    st.subheader('Protein Toxin Prediction')
+    with col1:
+        st.markdown("""
+        ProToxin is a machine learning-based predictor for detecting protein toxins from sequences. 
+        It is based on a machine learning algorithm, gradient boosting. ProToxin is a fast and efficient 
+        method and is freely available. It can be used for small and large numbers of sequences.
 
-    # 使用 session_state 初始化持久化变量
-    if "fasta_file_path" not in st.session_state:
-        st.session_state.fasta_file_path = None
-    if "sequences_dict" not in st.session_state:
-        st.session_state.sequences_dict = None
+        ProToxin was developed in the groups of Prof. Yang Yang (add here the address) and 
+        Prof. Mauno Vihinen, Protein Structure and Bioinformatics Research group, Lund University, Sweden.
+        """)
 
-    # 选项：上传文件 or 输入文本
-    option = st.radio("Choose an input method:", ("Upload a file", "Enter sequence manually"))
-    if option == "Upload a file":
-        upload_file: io.BytesIO = st.file_uploader(
-            label='Upload a file',
-            type=['fasta'],
-            accept_multiple_files=False,
-        )
-        if upload_file:
-            st.session_state.fasta_file_path = save_uploaded_file(upload_file)
-            st.success(Success.FILE_UPLOAD)
-    elif option == "Enter sequence manually":
-        fasta_text = st.text_area("Enter your FASTA content here:")
-        if st.button("Submit"):
-            if fasta.check_fasta_format(fasta_text.strip()):
-                file_name = "manual_input.fasta"
-                st.session_state.fasta_file_path = save_txt_to_file(file_name, fasta_text)
-                st.success(f"{Success.TEXT_UPLOAD}")
-            else:
-                st.warning(Warn.NOT_FASTA_FORMAT)
+    with col2:
+        # 图片示例 - 你可以替换为你自己的图片路径
+        # 1. 可以使用本地图片（需要放在正确的路径下）
+        # st.image("path/to/your/image.png", caption="图片注解", use_container_width=True)
 
-    # 使用 session_state 中保存的 fasta_file_path 进行验证
-    st.session_state.sequences_dict = is_valid_sequence(st.session_state.fasta_file_path)
+        # 2. 或者使用在线图片URL
+        st.image("https://placehold.co/400x300?text=Your+Image+Here", caption="图片注解", use_container_width=True)
 
-    st.divider() # ---------------------------------------------------
-
-    if st.session_state.sequences_dict:
-        st.subheader("Sequence Information: ")
-        show_sequence(st.session_state.sequences_dict)
-        st.divider()
-        if st.button("Start"):
-            st.text(st.session_state.fasta_file_path)
-            try:
-                df = predict_toxin(st.session_state.fasta_file_path)
-                st.divider()
-                st.header("Prediction Result")
-                res = do_predict(df)
-                show_result(res)
-            except Exception as e:
-                st.error(f"Error: {str(e)}")
+        # 图片下方的补充注释
+        st.caption("这里可以添加关于图片的更多描述性文字，比如说明图像展示的是什么内容，或者数据来源等信息。")
 
 
 def home_page():
     """主页内容"""
     welcome_section()
-    prediction_page()
+
+
+def show_footer():
+    """显示页脚信息"""
+    # 定义年份和版权信息
+    current_year = 2025  # 可以使用datetime.datetime.now().year获取当前年份
+
+    # 创建固定在底部的页脚
+    st.markdown(
+        f"""
+        <div style="position: fixed; bottom: 0; left: 0; right: 0; width: 100%; background-color: white; z-index: 1000; padding-top: 1rem; padding-bottom: 1rem; border-top: 1px solid #c0c0c0;">
+            <div style="width: {GOLDEN_RATIO_PERCENTAGE}%; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; color: #666666;">
+                <div style="text-align: left;">Protein Structure and Bioinformatics Research Group</div>
+                <div style="text-align: center;">© {current_year} ProToxin. All Rights Reserved.</div>
+                <div style="text-align: right;">Lund University, Sweden</div>
+            </div>
+        </div>
+        
+        <!-- 添加额外的空间，防止内容被固定页脚遮挡 -->
+        <div style="margin-bottom: 4rem;"></div>
+        """,
+        unsafe_allow_html=True
+    )
 
 
 if __name__ == '__main__':
@@ -217,14 +149,20 @@ if __name__ == '__main__':
 
     os.makedirs(cfg.FASTA_SAVE_DIR, exist_ok=True)
 
-    # 使用Streamlit原生的选项卡组件创建导航
-    tab1, tab2, tab3 = st.tabs(["Home", "Disclaimer", "About"])
+    # 使用Streamlit原生的选项卡组件创建导航，添加Prediction选项卡
+    tab1, tab2, tab3, tab4 = st.tabs(["Home", "Prediction", "Disclaimer", "About"])
 
     with tab1:
-        home_page()
+        home_page()  # 首页只显示欢迎信息
 
     with tab2:
-        show_disclaimer()
+        show_prediction()  # 使用从prediction.py导入的函数
 
     with tab3:
+        show_disclaimer()
+
+    with tab4:
         show_about()
+
+    # 在所有选项卡内容渲染后显示页脚
+    show_footer()

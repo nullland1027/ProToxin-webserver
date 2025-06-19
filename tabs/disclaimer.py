@@ -7,21 +7,15 @@ def show_disclaimer():
     st.markdown("""
     ## Disclaimer
 
-    This non-profit server, its associated data and services are for research purposes only. 
-    The responsibility of Protein Structure and Bioinformatics Group, Lund University is limited 
-    to applying the best efforts in providing and publishing good programs and data. 
-    The developers have no responsibility for the usage of results, data or information 
-    which this server has provided.
+    This non-profit server and its associated data and services are intended solely for academic and research purposes.
+     The Protein Structure and Bioinformatics Group at Lund University endeavors to provide high-quality tools and datasets;
+      however, we do not accept responsibility for the outcomes derived from the use of this server, including any results, analyses, or interpretations.
 
     ## Liability
 
-    In preparation of this site and service, every effort has been made to offer the most 
-    current and correct information possible. We render no warranty, express or implied, 
-    as to its accuracy or that the information is fit for a particular purpose, and will 
-    not be held responsible for any direct, indirect, putative, special, or consequential 
-    damages arising out of any inaccuracies or omissions. In utilizing this service, individuals, 
-    organizations, and companies absolve Lund University or any of their employees or agents 
-    from responsibility for the effect of any process, method or product or that may be produced 
-    or adopted by any part, notwithstanding that the formulation of such process, method or 
-    product may be based upon information provided here.
+    While every effort has been made to ensure the accuracy and timeliness of the information provided on this site, 
+    no warranties—explicit or implied—are given regarding its correctness, completeness, 
+    or suitability for any specific purpose. 
+    Users agree that Lund University and its staff or affiliates bear no liability for any direct, indirect, incidental, or consequential damages arising from the use of this service. 
+    Use of any process, method, or product based on this site’s content is at the user’s own risk.
     """)
