@@ -14,75 +14,21 @@ from tabs.about import show_about
 from tabs.prediction import show_prediction
 
 GOLDEN_RATIO_PERCENTAGE = 50
+# 设置固定的最大宽度（像素）
+MAX_CONTENT_WIDTH = 1200  # 可以根据需要调整这个值
+
 def set_page_container_style():
-    # 自定义CSS来设置页面宽度百分比，并居中显示
-    st.markdown(
-        f"""
-        <style>
-        .block-container {{
-            max-width: {GOLDEN_RATIO_PERCENTAGE}% !important;
-            padding-top: 2rem;
-            padding-right: 1rem;
-            padding-left: 1rem;
-            padding-bottom: 3rem;
-            margin: 0 auto;
-        }}
-        /* 自定义选项卡样式 */
-        .st-cb {{
-            font-size: 18px !important;
-        }}
-        /* 选项卡文本样式 */
-        div[data-testid="stVerticalBlock"] div[role="tab"] {{
-            font-size: 20px !important;
-            font-weight: 500;
-        }}
-        /* 选项卡列表容器居中 */
-        div[role="tablist"] {{
-            display: flex;
-            justify-content: center;
-        }}
-        /* 选项卡之间的间距 */
-        button[role="tab"] {{
-            margin: 0 1rem;
-        }}
-        /* 选中的选项卡样式 */
-        button[role="tab"][aria-selected="true"] {{
-            background-color: rgba(0, 104, 201, 0.1);
-            border-radius: 5px;
-        }}
-        /* 页脚样式 */
-        footer {{
-            visibility: visible;
-            width: 100% !important;  /* 使用100%宽度，与内容区域一致 */
-            margin-top: 5rem;
-            padding-top: 1.5rem;
-            padding-bottom: 1rem;
-            text-align: center;
-            border-top: 1px solid #e1e4e8;
-            position: relative; /* 改为相对定位，不浮动 */
-            bottom: 0;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
+    """设置页面容器样式和加载自定义UI元素"""
+    from utils.ui_helpers import inject_custom_css_and_js
+
+    # 加载并注入自定义CSS和JavaScript，传递MAX_CONTENT_WIDTH参数
+    inject_custom_css_and_js(MAX_CONTENT_WIDTH)
 
 
 def welcome_section():
     """显示欢迎信息的函数"""
-    # Logo和标题区域 - 使用columns进行水平排列
-    logo_col, title_col = st.columns([1, 4])
-
-    with logo_col:
-        # Logo位置
-        # 可以使用本地Logo图片
-        # st.image("path/to/your/logo.png", use_container_width=True)
-
-        # 或使用占位图作为示例
-        st.image("https://placehold.co/150x150?text=LOGO", use_container_width=True)
-
-    with title_col:
-        st.title('Welcome to ProToxin')
+    # 直接显示标题，不再在这里显示logo（logo已移至页眉）
+    st.title('Welcome to ProToxin')
 
     # 创建两列布局展示主要内容
     col1, col2 = st.columns([3, 2])
@@ -119,11 +65,11 @@ def show_footer():
     # 定义年份和版权信息
     current_year = 2025  # 可以使用datetime.datetime.now().year获取当前年份
 
-    # 创建固定在底部的页脚，边框线宽度仅为内容宽度
+    # 创建固定在底部的页脚，使用固定宽度而非百分比
     st.markdown(
         f"""
         <div style="position: fixed; bottom: 0; left: 0; right: 0; width: 100%; background-color: white; z-index: 1000; padding-top: 1rem; padding-bottom: 1rem;">
-            <div style="width: {GOLDEN_RATIO_PERCENTAGE}%; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; color: #666666; border-top: 1px solid #c0c0c0; padding-top: 1rem;">
+            <div style="max-width: {MAX_CONTENT_WIDTH}px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; color: #666666; border-top: 1px solid #c0c0c0; padding-top: 1rem;">
                 <div style="text-align: left;">Protein Structure and Bioinformatics Research Group</div>
                 <div style="text-align: center;">© {current_year} ProToxin. All Rights Reserved.</div>
                 <div style="text-align: right;">Lund University, Sweden</div>
@@ -141,7 +87,7 @@ if __name__ == '__main__':
     # 设置页面配置
     st.set_page_config(
         page_title="ProToxin",
-        layout="centered",  # 改回居中布局，我们将通过自定义CSS控制具体宽度
+        layout="centered",  # 使用居中布局，通过自定义CSS控制具体宽度
     )
 
     # 应用自定义宽度设置
@@ -149,20 +95,20 @@ if __name__ == '__main__':
 
     os.makedirs(cfg.FASTA_SAVE_DIR, exist_ok=True)
 
-    # 使用Streamlit原生的选项卡组件创建导航，添加Prediction选项卡
+    # 使用Streamlit原生的选项卡组件创建导航
     tab1, tab2, tab3, tab4 = st.tabs(["Home", "Prediction", "Disclaimer", "About"])
 
     with tab1:
-        home_page()  # 首页只显示欢迎信息
+        home_page()  # 首页内容
 
     with tab2:
-        show_prediction()  # 使用从prediction.py导入的函数
+        show_prediction()  # 预测功能
 
     with tab3:
-        show_disclaimer()
+        show_disclaimer()  # 免责声明
 
     with tab4:
-        show_about()
+        show_about()  # 关于页面
 
     # 在所有选项卡内容渲染后显示页脚
     show_footer()

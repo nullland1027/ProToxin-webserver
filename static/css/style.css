@@ -1,0 +1,70 @@
+/* 主要容器样式 */
+.block-container {
+    max-width: MAX_CONTENT_WIDTH !important;
+    padding-top: 2rem;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    padding-bottom: 3rem;
+    margin: 0 auto;
+}
+
+/* 当屏幕宽度小于MAX_CONTENT_WIDTH时，使用百分比宽度 */
+@media (max-width: MAX_CONTENT_WIDTH) {
+    .block-container {
+        max-width: 95% !important;
+    }
+}
+
+/* 修改选项卡容器的样式，使其左对齐且留出logo位置 */
+[data-testid="stHorizontalBlock"] {
+    gap: 0 !important;
+}
+
+/* 添加logo到选项卡容器的左侧 */
+.stTabs [data-testid="stHorizontalTabs"] {
+    padding-left: 100px;  /* 为logo腾出足够的空间 */
+    position: relative;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* Logo的样式和位置 */
+#logo-container {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    cursor: pointer;
+}
+
+#logo-img {
+    width: 80px;
+    height: auto;
+}
+
+/* 选项卡文本样式 */
+button[role="tab"] {
+    font-size: 20px !important;
+    font-weight: 500;
+    margin: 0 1rem;
+}
+
+/* 选中的选项卡样式 */
+button[role="tab"][aria-selected="true"] {
+    background-color: rgba(0, 104, 201, 0.1);
+    border-radius: 5px;
+}
+
+/* 页脚样式 */
+footer {
+    visibility: visible;
+    width: 100% !important;
+    margin-top: 5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1rem;
+    text-align: center;
+    border-top: 1px solid #e1e4e8;
+    position: relative;
+    bottom: 0;
+}
