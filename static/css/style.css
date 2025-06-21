@@ -56,15 +56,32 @@ button[role="tab"][aria-selected="true"] {
     border-radius: 5px;
 }
 
-/* 页脚样式 */
+/* 设置页面整体结构 */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* 内容包装器占满整个视口高度 */
+.content-wrapper {
+    min-height: 100vh; /* 使用视口高度 */
+    display: flex;
+    flex-direction: column;
+}
+
+/* 主内容区域自动填充可用空间 */
+.main-content {
+    flex: 1 0 auto; /* 这会让内容区域自动伸展填满空间 */
+}
+
+/* 页脚样式 - 改进的粘性页脚 */
 footer {
-    visibility: visible;
+    flex-shrink: 0; /* 防止页脚被压缩 */
     width: 100% !important;
-    margin-top: 5rem;
+    margin-top: 2rem; /* 减小上边距，让页脚更靠近底部 */
     padding-top: 1.5rem;
-    padding-bottom: 1rem;
-    text-align: center;
+    padding-bottom: 1.5rem; /* 增加底部内边距，让内容不要太靠近边缘 */
+    background-color: white;
     border-top: 1px solid #e1e4e8;
-    position: relative;
-    bottom: 0;
 }

@@ -1,11 +1,9 @@
-import io
 import os
-import time
-import pandas as pd
+from PIL import Image
+import base64
+from io import BytesIO
 
 from config.config import Config as cfg
-from config.config import Warn, Success, Error
-from utils import fasta
 from utils.ui_helpers import set_page_container_style, MAX_CONTENT_WIDTH
 import streamlit as st
 
@@ -24,7 +22,7 @@ def welcome_section():
     st.title('Welcome to ProToxin')
 
     # 创建两列布局展示主要内容
-    col1, col2 = st.columns([3, 2])
+    col1, _, col2 = st.columns([6, 0.5, 10])
 
     with col1:
         st.markdown("""
@@ -37,15 +35,9 @@ def welcome_section():
         """)
 
     with col2:
-        # 图片示例 - 你可以替换为你自己的图片路径
-        # 1. 可以使用本地图片（需要放在正确的路径下）
-        # st.image("path/to/your/image.png", caption="图片注解", use_container_width=True)
-
-        # 2. 或者使用在线图片URL
-        st.image("https://placehold.co/400x300?text=Your+Image+Here", caption="图片注解", use_container_width=True)
-
-        # 图片下方的补充注释
-        st.caption("这里可以添加关于图片的更多描述性文字，比如说明图像展示的是什么内容，或者数据来源等信息。")
+        # 使用原始方式显示右侧图像，不添加额外样式控制
+        st.image("assets/flowchart.v4.svg", caption="Flow chart of ProToxin", use_container_width=True)
+        # st.caption("pic by @Haohan Zhang, 2025")
 
 
 def home_page():
@@ -58,19 +50,16 @@ def show_footer():
     # 定义年份和版权信息
     current_year = 2025  # 可以使用datetime.datetime.now().year获取当前年份
 
-    # 创建固定在底部的页脚，使用固定宽度而非百分比
+    # 使用HTML创建页脚内容，但不添加样式（样式已在CSS文件中定义）
     st.markdown(
         f"""
-        <div style="position: fixed; bottom: 0; left: 0; right: 0; width: 100%; background-color: white; z-index: 1000; padding-top: 1rem; padding-bottom: 1rem;">
-            <div style="max-width: {MAX_CONTENT_WIDTH}px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; color: #666666; border-top: 1px solid #c0c0c0; padding-top: 1rem;">
+        <footer>
+            <div style="max-width: {MAX_CONTENT_WIDTH}px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
                 <div style="text-align: left;">Protein Structure and Bioinformatics Research Group</div>
                 <div style="text-align: center;">© {current_year} ProToxin. All Rights Reserved.</div>
                 <div style="text-align: right;">Lund University, Sweden</div>
             </div>
-        </div>
-        
-        <!-- 添加额外的空间，防止内容被固定页脚遮挡 -->
-        <div style="margin-bottom: 4rem;"></div>
+        </footer>
         """,
         unsafe_allow_html=True
     )
@@ -88,10 +77,13 @@ if __name__ == '__main__':
 
     os.makedirs(cfg.FASTA_SAVE_DIR, exist_ok=True)
 
+    # 添加内容包装器开始标记，用于实现粘性页脚
+    st.markdown('<div class="content-wrapper"><div class="main-content">', unsafe_allow_html=True)
+
     # 创建水平排列的Logo和导航栏
     header_container = st.container()
     with header_container:
-        logo_col, tabs_col = st.columns([1, 14])  # 分配左侧1/10给logo，右侧9/10给导航标签页
+        logo_col, tabs_col = st.columns([1, 14])  # 分配左侧1/15给logo，右侧14/15给导航标签页
 
         with logo_col:
             # 加载logo图像
@@ -121,5 +113,11 @@ if __name__ == '__main__':
     with tab4:
         show_about()  # 关于页面
 
+    # 添加内容包装器结束标记
+    st.markdown('</div>', unsafe_allow_html=True)
+
     # 在所有选项卡内容渲染后显示页脚
     show_footer()
+
+    # 关闭内容包装器
+    st.markdown('</div>', unsafe_allow_html=True)
