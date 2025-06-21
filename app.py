@@ -6,6 +6,7 @@ import pandas as pd
 from config.config import Config as cfg
 from config.config import Warn, Success, Error
 from utils import fasta
+from utils.ui_helpers import set_page_container_style, MAX_CONTENT_WIDTH
 import streamlit as st
 
 # 导入页面内容
@@ -13,16 +14,8 @@ from tabs.disclaimer import show_disclaimer
 from tabs.about import show_about
 from tabs.prediction import show_prediction
 
+
 GOLDEN_RATIO_PERCENTAGE = 50
-# 设置固定的最大宽度（像素）
-MAX_CONTENT_WIDTH = 1200  # 可以根据需要调整这个值
-
-def set_page_container_style():
-    """设置页面容器样式和加载自定义UI元素"""
-    from utils.ui_helpers import inject_custom_css_and_js
-
-    # 加载并注入自定义CSS和JavaScript，传递MAX_CONTENT_WIDTH参数
-    inject_custom_css_and_js(MAX_CONTENT_WIDTH)
 
 
 def welcome_section():
@@ -94,6 +87,19 @@ if __name__ == '__main__':
     set_page_container_style()
 
     os.makedirs(cfg.FASTA_SAVE_DIR, exist_ok=True)
+
+    # 显示logo
+    logo_col, spacer_col = st.columns([1, 10])
+    with logo_col:
+        # 加载logo图像
+        try:
+            logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'toxin-logo.png')
+            if os.path.exists(logo_path):
+                st.image(logo_path, width=80)
+            else:
+                st.warning("Logo图像不存在")
+        except Exception as e:
+            st.error(f"加载logo时出错：{str(e)}")
 
     # 使用Streamlit原生的选项卡组件创建导航
     tab1, tab2, tab3, tab4 = st.tabs(["Home", "Prediction", "Disclaimer", "About"])

@@ -2,6 +2,9 @@ import os
 import base64
 import streamlit as st
 
+# 设置固定的最大宽度（像素）
+MAX_CONTENT_WIDTH = 1200  # 可以根据需要调整这个值
+
 def get_base64_encoded_image(image_path):
     """将图片转换为base64编码，以便在HTML中嵌入显示"""
     with open(image_path, "rb") as img_file:
@@ -59,3 +62,63 @@ def inject_custom_css_and_js(max_width):
         st.markdown(custom_js, unsafe_allow_html=True)
     except Exception as e:
         st.error(f"注入CSS和JS时出错: {str(e)}")
+
+def set_page_container_style():
+    """设置页面容器样式和加载自定义CSS"""
+    # 只加载CSS，不加载JavaScript
+    st.markdown(
+        f"""
+        <style>
+        .block-container {{
+            max-width: {MAX_CONTENT_WIDTH}px !important;
+            padding-top: 2rem;
+            padding-right: 1rem;
+            padding-left: 1rem;
+            padding-bottom: 3rem;
+            margin: 0 auto;
+        }}
+
+        /* 当屏幕宽度小于MAX_CONTENT_WIDTH时，使用百分比宽度 */
+        @media (max-width: {MAX_CONTENT_WIDTH}px) {{
+            .block-container {{
+                max-width: 95% !important;
+            }}
+        }}
+
+        /* 页脚样式 */
+        footer {{
+            visibility: visible;
+            width: 100% !important;
+            margin-top: 5rem;
+            padding-top: 1.5rem;
+            padding-bottom: 1rem;
+            text-align: center;
+            border-top: 1px solid #e1e4e8;
+            position: relative;
+            bottom: 0;
+        }}
+
+        /* 自定义标签页样式，使选项卡居中但留出左侧logo空间 */
+        .stTabs [data-testid="stHorizontalTabs"] {{
+            padding-left: 100px;
+            position: relative;
+        }}
+
+        /* logo容器样式 */
+        .logo-container {{
+            position: absolute;
+            top: -40px;
+            left: 0;
+            z-index: 10;
+        }}
+
+        /* logo图像样式 */
+        .logo-container img {{
+            width: 80px;
+            height: auto;
+            cursor: pointer;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
