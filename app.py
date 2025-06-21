@@ -149,7 +149,16 @@ if __name__ == '__main__':
         """, unsafe_allow_html=True)
 
         # ===== Tabs 本体 =====
-        tab1, tab2, tab3, tab4 = st.tabs(["Home", "Prediction", "Disclaimer", "About"])
+        empty = "\n\n"
+        tab1, _, _, tab2, _, _, tab3, _,_, tab4 = st.tabs([
+            "Home",
+            empty, empty,
+            "Prediction",
+            empty, empty,
+            "Disclaimer",
+            empty, empty,
+            "About"
+        ])
 
     # 使用各个标签页内容
     with tab1:
