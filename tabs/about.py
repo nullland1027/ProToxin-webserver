@@ -30,9 +30,7 @@ def show_about():
 
     Datasets were obtained with extensive data mining.
 
-    [Download training dataset](#) (链接将在服务器上提供)
-
-    [Download test dataset](#) (链接将在服务器上提供)
+    [Download dataset](https://drive.google.com/drive/folders/19vRYJw3JuLg0hYpwIUaMeIVm-VC8Vx11?usp=sharing)
 
     ## Contact
 

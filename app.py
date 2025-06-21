@@ -22,7 +22,7 @@ def welcome_section():
     st.title('Welcome to ProToxin')
 
     # 创建两列布局展示主要内容
-    col1, _, col2 = st.columns([6, 0.5, 10])
+    col1, _, col2 = st.columns([6, 0.5, 8])
 
     with col1:
         st.markdown("""
@@ -37,7 +37,42 @@ def welcome_section():
     with col2:
         # 使用原始方式显示右侧图像，不添加额外样式控制
         st.image("assets/flowchart.v4.svg", caption="Flow chart of ProToxin", use_container_width=True)
-        # st.caption("pic by @Haohan Zhang, 2025")
+        st.caption("pic by @Haohan Zhang, 2025, Department of Computer science of Soochow University, China")
+
+    left, mid, right = st.columns([1, 1, 1])
+    with left:
+        st.markdown(
+            """
+            <div style="display: flex; justify-content: center; margin-top: 55px;">
+                <img src="data:image/svg+xml;base64,{}" style="max-width: 400px; height: auto;">
+            </div>
+            """.format(
+                base64.b64encode(open("assets/Lund_university_L_CMYK.svg", "rb").read()).decode()
+            ),
+            unsafe_allow_html=True
+        )
+    with mid:
+        st.markdown(
+            """
+            <div style="display: flex; justify-content: center; margin-top: 50px;">
+                <img src="data:image/png;base64,{}" style="max-width: 320px; height: auto;">
+            </div>
+            """.format(
+                base64.b64encode(open("assets/suda2.png", "rb").read()).decode()
+            ),
+            unsafe_allow_html=True
+        )
+    with right:
+        st.markdown(
+            """
+            <div style="display: flex; justify-content: center; margin-top: 50px;">
+                <img src="data:image/png;base64,{}" style="max-width: 320px; height: auto;">
+            </div>
+            """.format(
+                base64.b64encode(open("assets/csxy.png", "rb").read()).decode()
+            ),
+            unsafe_allow_html=True
+        )
 
 
 def home_page():
