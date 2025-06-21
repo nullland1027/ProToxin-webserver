@@ -88,22 +88,27 @@ if __name__ == '__main__':
 
     os.makedirs(cfg.FASTA_SAVE_DIR, exist_ok=True)
 
-    # 显示logo
-    logo_col, spacer_col = st.columns([1, 10])
-    with logo_col:
-        # 加载logo图像
-        try:
-            logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'toxin-logo.png')
-            if os.path.exists(logo_path):
-                st.image(logo_path, width=80)
-            else:
-                st.warning("Logo图像不存在")
-        except Exception as e:
-            st.error(f"加载logo时出错：{str(e)}")
+    # 创建水平排列的Logo和导航栏
+    header_container = st.container()
+    with header_container:
+        logo_col, tabs_col = st.columns([1, 14])  # 分配左侧1/10给logo，右侧9/10给导航标签页
 
-    # 使用Streamlit原生的选项卡组件创建导航
-    tab1, tab2, tab3, tab4 = st.tabs(["Home", "Prediction", "Disclaimer", "About"])
+        with logo_col:
+            # 加载logo图像
+            try:
+                logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'toxin-logo.png')
+                if os.path.exists(logo_path):
+                    st.image(logo_path, width=80)
+                else:
+                    st.warning("Logo图像不存在")
+            except Exception as e:
+                st.error(f"加载logo时出错：{str(e)}")
 
+        with tabs_col:
+            # 使用Streamlit原生的选项卡组件创建导航
+            tab1, tab2, tab3, tab4 = st.tabs(["Home", "Prediction", "Disclaimer", "About"])
+
+    # 使用各个标签页内容
     with tab1:
         home_page()  # 首页内容
 
