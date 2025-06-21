@@ -30,8 +30,8 @@ def welcome_section():
         It is based on a machine learning algorithm, gradient boosting. ProToxin is a fast and efficient 
         method and is freely available. It can be used for small and large numbers of sequences.
 
-        ProToxin was developed in the groups of Prof. Yang Yang (add here the address) and 
-        Prof. Mauno Vihinen, Protein Structure and Bioinformatics Research group, Lund University, Sweden.
+        ProToxin was developed in the groups of Prof. Yang Yang, Suzhou Key Lab of Multi-modal Data Fusion and Intelligent Healthcare, 
+        Suzhou City University and Prof. Mauno Vihinen, Protein Structure and Bioinformatics Research group, Lund University, Sweden.
         """)
 
     with col2:
@@ -104,6 +104,7 @@ if __name__ == '__main__':
     # 设置页面配置
     st.set_page_config(
         page_title="ProToxin",
+        page_icon="🧬",
         layout="centered",  # 使用居中布局，通过自定义CSS控制具体宽度
     )
 
@@ -118,22 +119,37 @@ if __name__ == '__main__':
     # 创建水平排列的Logo和导航栏
     header_container = st.container()
     with header_container:
-        logo_col, tabs_col = st.columns([1, 14])  # 分配左侧1/15给logo，右侧14/15给导航标签页
+        # ===== Logo 整行展示 + 负 margin =====
+        try:
+            logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'toxin-logo.png')
+            if os.path.exists(logo_path):
+                with open(logo_path, "rb") as f:
+                    logo_base64 = base64.b64encode(f.read()).decode()
 
-        with logo_col:
-            # 加载logo图像
-            try:
-                logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'toxin-logo.png')
-                if os.path.exists(logo_path):
-                    st.image(logo_path, width=80)
-                else:
-                    st.warning("Logo图像不存在")
-            except Exception as e:
-                st.error(f"加载logo时出错：{str(e)}")
+                st.markdown(
+                    f"""
+                    <div style="margin-bottom: -80px; margin-top: 0px;">
+                        <img src="data:image/png;base64,{logo_base64}" style="width:100px;">
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+            else:
+                st.warning("Logo图像不存在")
+        except Exception as e:
+            st.error(f"加载logo时出错：{str(e)}")
 
-        with tabs_col:
-            # 使用Streamlit原生的选项卡组件创建导航
-            tab1, tab2, tab3, tab4 = st.tabs(["Home", "Prediction", "Disclaimer", "About"])
+        # ===== Tabs 样式注入（居中） =====
+        st.markdown("""
+            <style>
+            div[data-baseweb="tab-list"] {
+                justify-content: center !important;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+
+        # ===== Tabs 本体 =====
+        tab1, tab2, tab3, tab4 = st.tabs(["Home", "Prediction", "Disclaimer", "About"])
 
     # 使用各个标签页内容
     with tab1:
