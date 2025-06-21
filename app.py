@@ -119,11 +119,11 @@ def show_footer():
     # 定义年份和版权信息
     current_year = 2025  # 可以使用datetime.datetime.now().year获取当前年份
 
-    # 创建固定在底部的页脚
+    # 创建固定在底部的页脚，边框线宽度仅为内容宽度
     st.markdown(
         f"""
-        <div style="position: fixed; bottom: 0; left: 0; right: 0; width: 100%; background-color: white; z-index: 1000; padding-top: 1rem; padding-bottom: 1rem; border-top: 1px solid #c0c0c0;">
-            <div style="width: {GOLDEN_RATIO_PERCENTAGE}%; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; color: #666666;">
+        <div style="position: fixed; bottom: 0; left: 0; right: 0; width: 100%; background-color: white; z-index: 1000; padding-top: 1rem; padding-bottom: 1rem;">
+            <div style="width: {GOLDEN_RATIO_PERCENTAGE}%; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; color: #666666; border-top: 1px solid #c0c0c0; padding-top: 1rem;">
                 <div style="text-align: left;">Protein Structure and Bioinformatics Research Group</div>
                 <div style="text-align: center;">© {current_year} ProToxin. All Rights Reserved.</div>
                 <div style="text-align: right;">Lund University, Sweden</div>
