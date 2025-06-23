@@ -16,6 +16,13 @@ from tabs.prediction import show_prediction
 GOLDEN_RATIO_PERCENTAGE = 50
 
 
+@st.cache_data
+def load_image_as_base64(image_path):
+    """加载图片并将其编码为base64字符串"""
+    with open(image_path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+
 def welcome_section():
     """显示欢迎信息的函数"""
     # 直接显示标题，不再在这里显示logo（logo已移至页眉）
@@ -35,42 +42,44 @@ def welcome_section():
         """)
 
     with col2:
-        # 使用原始方式显示右侧图像，不添加额外样式控制
-        st.image("assets/flowchart.v4.svg", caption="Flow chart of ProToxin", use_container_width=True)
+        # 使用base64加载SVG以优化云服务器上的加载速度
+        flowchart_base64 = load_image_as_base64("assets/flowchart.v4.svg")
+        st.markdown(
+            f'<img src="data:image/svg+xml;base64,{flowchart_base64}" style="max-width: 100%;">',
+            unsafe_allow_html=True
+        )
+        st.caption("Flow chart of ProToxin")
         st.caption("pic by @Haohan Zhang, 2025, Department of Computer science of Soochow University, China")
 
     left, mid, right = st.columns([1, 1, 1])
     with left:
+        lund_logo_base64 = load_image_as_base64("assets/Lund_university_L_CMYK.svg")
         st.markdown(
-            """
+            f'''
             <div style="display: flex; justify-content: center; margin-top: 55px;">
-                <img src="data:image/svg+xml;base64,{}" style="max-width: 400px; height: auto;">
+                <img src="data:image/svg+xml;base64,{lund_logo_base64}" style="max-width: 400px; height: auto;">
             </div>
-            """.format(
-                base64.b64encode(open("assets/Lund_university_L_CMYK.svg", "rb").read()).decode()
-            ),
+            ''',
             unsafe_allow_html=True
         )
     with mid:
+        suda_logo_base64 = load_image_as_base64("assets/suda2.png")
         st.markdown(
-            """
+            f'''
             <div style="display: flex; justify-content: center; margin-top: 50px;">
-                <img src="data:image/png;base64,{}" style="max-width: 320px; height: auto;">
+                <img src="data:image/png;base64,{suda_logo_base64}" style="max-width: 320px; height: auto;">
             </div>
-            """.format(
-                base64.b64encode(open("assets/suda2.png", "rb").read()).decode()
-            ),
+            ''',
             unsafe_allow_html=True
         )
     with right:
+        csxy_logo_base64 = load_image_as_base64("assets/csxy.png")
         st.markdown(
-            """
+            f'''
             <div style="display: flex; justify-content: center; margin-top: 50px;">
-                <img src="data:image/png;base64,{}" style="max-width: 320px; height: auto;">
+                <img src="data:image/png;base64,{csxy_logo_base64}" style="max-width: 320px; height: auto;">
             </div>
-            """.format(
-                base64.b64encode(open("assets/csxy.png", "rb").read()).decode()
-            ),
+            ''',
             unsafe_allow_html=True
         )
 
