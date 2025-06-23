@@ -17,7 +17,4 @@ RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && \
 
 EXPOSE 8501
 
-CMD ["streamlit", "run", "app.py",
-    "--server.address=0.0.0.0",
-    "--server.headless=true",
-    "--browser.gatherUsageStats=false"]
+CMD ["streamlit", "run", "app.py", "--server.address=0.0.0.0", "--server.headless=true", "--browser.gatherUsageStats=false"]
