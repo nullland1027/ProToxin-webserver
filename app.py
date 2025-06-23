@@ -25,7 +25,6 @@ def load_image_as_base64(image_path):
 
 def welcome_section():
     """显示欢迎信息的函数"""
-    # 直接显示标题，不再在这里显示logo（logo已移至页眉）
     st.title('Welcome to ProToxin')
 
     # 创建两列布局展示主要内容
@@ -109,6 +108,36 @@ def show_footer():
     )
 
 
+def load_font():
+    # 在 app.py 的 st.set_page_config() 之后添加
+    st.markdown("""
+        <style>
+        /* poppins-latin-400-normal (常规) */
+        @font-face {
+          font-family: 'Poppins';
+          font-style: normal;
+          font-display: swap;
+          font-weight: 400;
+          src: url(https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-400-normal.woff2) format('woff2'), url(https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-400-normal.woff) format('woff');
+        }
+
+        /* poppins-latin-700-normal (粗体) */
+        @font-face {
+          font-family: 'Poppins';
+          font-style: title;
+          font-display: swap;
+          font-weight: 700;
+          src: url(https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-700-normal.woff2) format('woff2'), url(https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-700-normal.woff) format('woff');
+        }
+
+        /* 将 Poppins 字体应用到 Streamlit 应用的所有元素 */
+        html, body, [class*="st-"], [data-testid="stAppViewContainer"] {
+            font-family: 'Poppins', sans-serif;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
+
 if __name__ == '__main__':
     # 设置页面配置
     st.set_page_config(
@@ -116,6 +145,8 @@ if __name__ == '__main__':
         page_icon="🧬",
         layout="centered",  # 使用居中布局，通过自定义CSS控制具体宽度
     )
+
+    load_font()
 
     # 应用自定义宽度设置
     set_page_container_style()

@@ -69,7 +69,7 @@ def show_sequence(sequences_dict):
     )
 
 
-@st.cache_data(ttl=3600, max_entries=20)
+@st.cache_data(ttl=3600, max_entries=20, show_spinner=False)
 def gen_features(fasta_file_path):
     fg = FGenerator(
         fasta_file=fasta_file_path,
