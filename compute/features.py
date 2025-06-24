@@ -200,11 +200,11 @@ class FGenerator:
                                    self.df_dpc, self.df_geary, self.df_mb, self.df_qso], axis=1)
 
 
-    def gen_pssm(self):
-        self.df_pssm = create_pssm(self.fasta_file, self.__db_path, evalue=0.001, num_iterations=3, n_jobs=os.cpu_count())
+    def gen_pssm(self, progress_callback=None):
+        self.df_pssm = create_pssm(self.fasta_file, self.__db_path, evalue=0.001, num_iterations=3, n_jobs=os.cpu_count(), progress_callback=progress_callback)
 
-    def gen_aaindex(self):
-        self.df_aaindex = get_important_aaindex_617_by_fasta(self.fasta_file)
+    def gen_aaindex(self, progress_callback=None):
+        self.df_aaindex = get_important_aaindex_617_by_fasta(self.fasta_file, progress_callback=progress_callback)
 
     def combine_features(self):
         self.df_total = pd.concat([self.df_pssm, self.df_protr, self.df_aaindex], axis=1)

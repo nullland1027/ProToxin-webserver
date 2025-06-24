@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-from tqdm.auto import tqdm
 from Bio import SeqIO
 import numpy as np
 import time
@@ -78,7 +77,7 @@ def global_average_pooling(pssm: np.ndarray) -> np.ndarray:
     return np.mean(pssm, axis=0)
 
 
-def create_pssm(fasta_file, prot_db_path, evalue=0.001, num_iterations=3, n_jobs=1) -> pd.DataFrame:
+def create_pssm(fasta_file, prot_db_path, evalue=0.001, num_iterations=3, n_jobs=1, progress_callback=None) -> pd.DataFrame:
     """
     1. Extract one sequence from the fasta file.
     2. Write the sequence to a temporary fasta file.
@@ -95,8 +94,9 @@ def create_pssm(fasta_file, prot_db_path, evalue=0.001, num_iterations=3, n_jobs
     for col in MOST_IMPORTANT_OF_88:
         dtypes[col] = 'float32'
     pssm_df = pd.DataFrame({col: pd.Series(dtype=dtype) for col, dtype in dtypes.items()})
-    records = SeqIO.parse(fasta_file, "fasta")
-    for record in tqdm(records, total=len(list(SeqIO.parse(fasta_file, "fasta"))), dynamic_ncols=True, colour="red"):
+    records = list(SeqIO.parse(fasta_file, "fasta"))
+    total_records = len(records)
+    for i, record in enumerate(records):
         file_name = f"{record.id}.fasta".replace("|", "-")  # 生成文件名，使用序列的ID
         tmp_fasta_file = os.path.join("tmp", file_name)  # fasta file path
         SeqIO.write(record, tmp_fasta_file, "fasta")  # 提取单个序列，并写入文件
@@ -127,6 +127,8 @@ def create_pssm(fasta_file, prot_db_path, evalue=0.001, num_iterations=3, n_jobs
             pass
         df = pd.concat([pd.DataFrame([record.id], columns=["pid"]), df], axis=1)
         pssm_df = pd.concat([pssm_df, df], axis=0, ignore_index=True)
+        if progress_callback:
+            progress_callback(i + 1, total_records)
     return pssm_df
 
 

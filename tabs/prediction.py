@@ -70,7 +70,7 @@ def show_sequence(sequences_dict):
 
 
 @st.cache_data(ttl=3600, max_entries=20, show_spinner=False)
-def gen_features(fasta_file_path):
+def gen_features(fasta_file_path, _pssm_progress_callback=None, _aaindex_progress_callback=None):
     fg = FGenerator(
         fasta_file=fasta_file_path,
         feature_selection_file="config/fs_88_2024-10-23-10:06:41.json",
@@ -78,8 +78,8 @@ def gen_features(fasta_file_path):
         protein_db_path="data/uniprot_sprot_db_20240911/uniprot_sprot_db"
     )
     fg.gen_protr()
-    fg.gen_pssm()
-    fg.gen_aaindex()
+    fg.gen_pssm(progress_callback=_pssm_progress_callback)
+    fg.gen_aaindex(progress_callback=_aaindex_progress_callback)
     fg.combine_features()
     fg.feature_select()
     return fg.get_data_in_dataframe()
@@ -90,7 +90,30 @@ def predict_toxin(fasta_file_path):
         st.write("Fetching data...")
         time.sleep(0.5)
         st.write("Feature generating...")
-        feature_df = gen_features(fasta_file_path)
+
+        # PSSM Progress Bar
+        st.write("Generating PSSM features...")
+        pssm_progress_bar = st.progress(0)
+        pssm_progress_text = st.empty()
+        def update_pssm_progress(current, total):
+            progress = current / total
+            pssm_progress_bar.progress(progress)
+            pssm_progress_text.text(f"{current}/{total} sequences processed.")
+
+        # AAIndex Progress Bar
+        st.write("Generating AAIndex features...")
+        aaindex_progress_bar = st.progress(0)
+        aaindex_progress_text = st.empty()
+        def update_aaindex_progress(current, total):
+            progress = current / total
+            aaindex_progress_bar.progress(progress)
+            aaindex_progress_text.text(f"{current}/{total} sequences processed.")
+
+        feature_df = gen_features(
+            fasta_file_path,
+            _pssm_progress_callback=update_pssm_progress,
+            _aaindex_progress_callback=update_aaindex_progress
+        )
         st.write("Model predicting...")
         time.sleep(1)
         status.update(
