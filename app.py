@@ -42,13 +42,12 @@ def welcome_section():
 
     with col2:
         # 使用base64加载SVG以优化云服务器上的加载速度
-        flowchart_base64 = load_image_as_base64("assets/flowchart.v4.svg")
+        flowchart_base64 = load_image_as_base64("assets/flowchart.v4.webp")
         st.markdown(
-            f'<img src="data:image/svg+xml;base64,{flowchart_base64}" style="max-width: 100%;">',
+            f'<img src="data:image/webp;base64,{flowchart_base64}" style="max-width: 100%;">',
             unsafe_allow_html=True
         )
-        st.caption("Flow chart of ProToxin")
-        st.caption("pic by @Haohan Zhang, 2025, Department of Computer science of Soochow University, China")
+        st.caption("Flow chart of ProToxin. @Haohan Zhang, 2025, Department of Computer science of Soochow University, China")
 
     left, mid, right = st.columns([1, 1, 1])
     with left:
@@ -129,7 +128,7 @@ if __name__ == '__main__':
     with header_container:
         # ===== Logo 整行展示 + 负 margin =====
         try:
-            logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'toxin-logo.png')
+            logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'logo.png')
             if os.path.exists(logo_path):
                 with open(logo_path, "rb") as f:
                     logo_base64 = base64.b64encode(f.read()).decode()
