@@ -39,6 +39,12 @@ def is_valid_sequence(fasta_file_path):
                 st.stop()
 
             st.text(f"Number of sequences: {len(sequences_dict['pid'])}")
+
+            # 检查序列数量是否超过100
+            if len(sequences_dict['pid']) > 100:
+                st.error(Error.TOO_MANY_SEQUENCES)
+                st.stop()
+
             # 2. Check sequence length
             if fasta.contain_short_sequence(sequences_dict):
                 st.warning(Warn.TOO_SHORT_SEQUENCE)
