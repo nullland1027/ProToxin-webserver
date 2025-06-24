@@ -69,17 +69,18 @@ def show_sequence(sequences_dict):
     )
 
 
-@st.cache_data(ttl=3600, max_entries=20, show_spinner=False)
-def gen_features(fasta_file_path, _pssm_progress_callback=None, _aaindex_progress_callback=None):
+# 移除 @st.cache_data 装饰器以解决错误
+def gen_features(fasta_file_path, _progress_callback=None):
     fg = FGenerator(
         fasta_file=fasta_file_path,
         feature_selection_file="config/fs_88_2024-10-23-10:06:41.json",
         protr_features_file="config/selected_protr_features.json",
         protein_db_path="data/uniprot_sprot_db_20240911/uniprot_sprot_db"
     )
-    fg.gen_protr()
-    fg.gen_pssm(progress_callback=_pssm_progress_callback)
-    fg.gen_aaindex(progress_callback=_aaindex_progress_callback)
+    # 按顺序生成三种特征，每种都调用相同的进度回调
+    fg.gen_protr(progress_callback=_progress_callback)
+    fg.gen_pssm(progress_callback=_progress_callback)
+    fg.gen_aaindex(progress_callback=_progress_callback)
     fg.combine_features()
     fg.feature_select()
     return fg.get_data_in_dataframe()
@@ -91,29 +92,32 @@ def predict_toxin(fasta_file_path):
         time.sleep(0.5)
         st.write("Feature generating...")
 
-        # PSSM Progress Bar
-        st.write("Generating PSSM features...")
-        pssm_progress_bar = st.progress(0)
-        pssm_progress_text = st.empty()
-        def update_pssm_progress(current, total):
-            progress = current / total
-            pssm_progress_bar.progress(progress)
-            pssm_progress_text.text(f"{current}/{total} sequences processed.")
+        # 获取序列数量以计算总迭代次数
+        from utils.fasta import how_many_seqs
+        seq_count = how_many_seqs(fasta_file_path)
 
-        # AAIndex Progress Bar
-        st.write("Generating AAIndex features...")
-        aaindex_progress_bar = st.progress(0)
-        aaindex_progress_text = st.empty()
-        def update_aaindex_progress(current, total):
-            progress = current / total
-            aaindex_progress_bar.progress(progress)
-            aaindex_progress_text.text(f"{current}/{total} sequences processed.")
+        # 三种特征（protr、PSSM、aaindex）的总迭代次数是序列数的3倍
+        total_iterations = seq_count * 3
+        current_iteration = 0
+
+        # 创建单一进度条
+        progress_bar = st.progress(0)
+        progress_text = st.empty()
+
+        # 每次有一个序列特征计算完成时，更新进度条
+        def update_progress():
+            nonlocal current_iteration
+            current_iteration += 1
+            progress = current_iteration / total_iterations
+            # 更新进度条和文本
+            progress_bar.progress(progress)
+            progress_text.text(f"{int(progress*100)}%")
 
         feature_df = gen_features(
             fasta_file_path,
-            _pssm_progress_callback=update_pssm_progress,
-            _aaindex_progress_callback=update_aaindex_progress
+            _progress_callback=update_progress
         )
+
         st.write("Model predicting...")
         time.sleep(1)
         status.update(

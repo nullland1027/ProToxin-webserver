@@ -95,8 +95,7 @@ def create_pssm(fasta_file, prot_db_path, evalue=0.001, num_iterations=3, n_jobs
         dtypes[col] = 'float32'
     pssm_df = pd.DataFrame({col: pd.Series(dtype=dtype) for col, dtype in dtypes.items()})
     records = list(SeqIO.parse(fasta_file, "fasta"))
-    total_records = len(records)
-    for i, record in enumerate(records):
+    for record in records:
         file_name = f"{record.id}.fasta".replace("|", "-")  # 生成文件名，使用序列的ID
         tmp_fasta_file = os.path.join("tmp", file_name)  # fasta file path
         SeqIO.write(record, tmp_fasta_file, "fasta")  # 提取单个序列，并写入文件
@@ -128,7 +127,7 @@ def create_pssm(fasta_file, prot_db_path, evalue=0.001, num_iterations=3, n_jobs
         df = pd.concat([pd.DataFrame([record.id], columns=["pid"]), df], axis=1)
         pssm_df = pd.concat([pssm_df, df], axis=0, ignore_index=True)
         if progress_callback:
-            progress_callback(i + 1, total_records)
+            progress_callback()
     return pssm_df
 
 

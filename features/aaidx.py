@@ -81,11 +81,10 @@ def get_aaindex_617_by_fasta(fasta_file, progress_callback=None):
     d = fasta.read_fasta(fasta_file)
     res = []
     sequences = d["seq"]
-    total_seqs = len(sequences)
-    for i, seq in enumerate(sequences):
+    for seq in sequences:
         res.append(get_aaindex_617(seq))
         if progress_callback:
-            progress_callback(i + 1, total_seqs)
+            progress_callback()
     df = pd.concat(res, axis=0, ignore_index=True)
     df.insert(0, "protein_id", d["pid"])
     return df

@@ -179,7 +179,7 @@ class FGenerator:
         except Exception as e:
             print(f"Error while executing R script: {e}")
 
-    def gen_protr(self):
+    def gen_protr(self, progress_callback=None):
         self._gen_aac()
         self._gen_apaac()
         self._gen_ctd()
@@ -198,6 +198,9 @@ class FGenerator:
         self.df_qso.reset_index(drop=True, inplace=True)
         self.df_protr = pd.concat([self.df_aac, self.df_apaac, self.df_ctd, self.df_ctriad,
                                    self.df_dpc, self.df_geary, self.df_mb, self.df_qso], axis=1)
+        if progress_callback:
+            for _ in range(self.seq_num):
+                progress_callback()
 
 
     def gen_pssm(self, progress_callback=None):
