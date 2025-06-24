@@ -145,14 +145,9 @@ def show_prediction():
     # 添加页面标题
     st.title('Protein Toxin Prediction')
 
-    # 使用 session_state 初始化持久化变量
-    if "fasta_file_path" not in st.session_state:
-        st.session_state.fasta_file_path = None
-    if "sequences_dict" not in st.session_state:
-        st.session_state.sequences_dict = None
-
     # 选项：上传文件 or 输入文本
     option = st.radio("Choose an input method:", ("Upload a file", "Enter sequence manually"))
+
     if option == "Upload a file":
         upload_file: io.BytesIO = st.file_uploader(
             label='Upload a file',
@@ -160,34 +155,47 @@ def show_prediction():
             accept_multiple_files=False,
         )
         if upload_file:
-            st.session_state.fasta_file_path = save_uploaded_file(upload_file)
+            # 保存上传的文件
+            fasta_file_path = save_uploaded_file(upload_file)
             st.success(Success.FILE_UPLOAD)
+
+            # 直接验证并处理序列
+            try_process_sequence(fasta_file_path)
+
     elif option == "Enter sequence manually":
         fasta_text = st.text_area("Enter your FASTA content here:")
         if st.button("Submit"):
             if fasta.check_fasta_format(fasta_text.strip()):
+                # 保存手动输入的序列
                 file_name = "manual_input.fasta"
-                st.session_state.fasta_file_path = save_txt_to_file(file_name, fasta_text)
+                fasta_file_path = save_txt_to_file(file_name, fasta_text)
                 st.success(f"{Success.TEXT_UPLOAD}")
+
+                # 直接验证并处理序列
+                try_process_sequence(fasta_file_path)
             else:
                 st.warning(Warn.NOT_FASTA_FORMAT)
 
-    # 使用 session_state 中保存的 fasta_file_path 进行验证
-    st.session_state.sequences_dict = is_valid_sequence(st.session_state.fasta_file_path)
 
-    st.divider() # ---------------------------------------------------
+def try_process_sequence(fasta_file_path):
+    """验证序列并开始预测过程"""
+    # 验证序列
+    sequences_dict = is_valid_sequence(fasta_file_path)
 
-    if st.session_state.sequences_dict:
+    if sequences_dict:
         st.subheader("Sequence Information: ")
-        show_sequence(st.session_state.sequences_dict)
+        show_sequence(sequences_dict)
         st.divider()
-        if st.button("Start"):
-            st.text(st.session_state.fasta_file_path)
-            try:
-                df = predict_toxin(st.session_state.fasta_file_path)
-                st.divider()
-                st.header("Prediction Result")
-                res = do_predict(df)
-                show_result(res)
-            except Exception as e:
-                st.error(f"Error: {str(e)}")
+
+        # 显示文件路径（可选）
+        st.text(fasta_file_path)
+
+        try:
+            # 开始预测
+            df = predict_toxin(fasta_file_path)
+            st.divider()
+            st.header("Prediction Result")
+            res = do_predict(df)
+            show_result(res)
+        except Exception as e:
+            st.error(f"Error: {str(e)}")
