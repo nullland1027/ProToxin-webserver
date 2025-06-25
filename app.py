@@ -42,13 +42,12 @@ def welcome_section():
 
     with col2:
         # 使用base64加载SVG以优化云服务器上的加载速度
-        flowchart_base64 = load_image_as_base64("assets/flowchart.v4.svg")
+        flowchart_base64 = load_image_as_base64("assets/flowchart.v4.webp")
         st.markdown(
-            f'<img src="data:image/svg+xml;base64,{flowchart_base64}" style="max-width: 100%;">',
+            f'<img src="data:image/webp;base64,{flowchart_base64}" style="max-width: 100%;">',
             unsafe_allow_html=True
         )
-        st.caption("Flow chart of ProToxin")
-        st.caption("pic by @Haohan Zhang, 2025, Department of Computer science of Soochow University, China")
+        st.caption("Flow chart of ProToxin. @Haohan Zhang, 2025, Department of Computer science of Soochow University, China")
 
     left, mid, right = st.columns([1, 1, 1])
     with left:
@@ -108,36 +107,6 @@ def show_footer():
     )
 
 
-def load_font():
-    # 在 app.py 的 st.set_page_config() 之后添加
-    st.markdown("""
-        <style>
-        /* poppins-latin-400-normal (常规) */
-        @font-face {
-          font-family: 'Poppins';
-          font-style: normal;
-          font-display: swap;
-          font-weight: 400;
-          src: url(https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-400-normal.woff2) format('woff2'), url(https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-400-normal.woff) format('woff');
-        }
-
-        /* poppins-latin-700-normal (粗体) */
-        @font-face {
-          font-family: 'Poppins';
-          font-style: title;
-          font-display: swap;
-          font-weight: 700;
-          src: url(https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-700-normal.woff2) format('woff2'), url(https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-700-normal.woff) format('woff');
-        }
-
-        /* 将 Poppins 字体应用到 Streamlit 应用的所有元素 */
-        html, body, [class*="st-"], [data-testid="stAppViewContainer"] {
-            font-family: 'Poppins', sans-serif;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-
-
 if __name__ == '__main__':
     # 设置页面配置
     st.set_page_config(
@@ -145,8 +114,6 @@ if __name__ == '__main__':
         page_icon="🧬",
         layout="centered",  # 使用居中布局，通过自定义CSS控制具体宽度
     )
-
-    load_font()
 
     # 应用自定义宽度设置
     set_page_container_style()
@@ -161,7 +128,7 @@ if __name__ == '__main__':
     with header_container:
         # ===== Logo 整行展示 + 负 margin =====
         try:
-            logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'toxin-logo.png')
+            logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'logo.png')
             if os.path.exists(logo_path):
                 with open(logo_path, "rb") as f:
                     logo_base64 = base64.b64encode(f.read()).decode()

@@ -2,7 +2,6 @@ from collections import defaultdict
 import numpy as np
 import json
 import pandas as pd
-from tqdm.auto import tqdm
 from utils import fasta
 
 
@@ -78,18 +77,21 @@ def get_aaindex_617(seq):
     return pd.concat([res1, res2], axis=1)
 
 
-def get_aaindex_617_by_fasta(fasta_file):
+def get_aaindex_617_by_fasta(fasta_file, progress_callback=None):
     d = fasta.read_fasta(fasta_file)
     res = []
-    for seq in tqdm(d["seq"]):
+    sequences = d["seq"]
+    for seq in sequences:
         res.append(get_aaindex_617(seq))
+        if progress_callback:
+            progress_callback()
     df = pd.concat(res, axis=0, ignore_index=True)
     df.insert(0, "protein_id", d["pid"])
     return df
 
 
-def get_important_aaindex_617_by_fasta(fasta_file):
-    df = get_aaindex_617_by_fasta(fasta_file)
+def get_important_aaindex_617_by_fasta(fasta_file, progress_callback=None):
+    df = get_aaindex_617_by_fasta(fasta_file, progress_callback=progress_callback)
     return df[MOST_IMPORTANT_AAINDEX_OF_88]
 
 

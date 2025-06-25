@@ -179,7 +179,7 @@ class FGenerator:
         except Exception as e:
             print(f"Error while executing R script: {e}")
 
-    def gen_protr(self):
+    def gen_protr(self, progress_callback=None):
         self._gen_aac()
         self._gen_apaac()
         self._gen_ctd()
@@ -198,13 +198,16 @@ class FGenerator:
         self.df_qso.reset_index(drop=True, inplace=True)
         self.df_protr = pd.concat([self.df_aac, self.df_apaac, self.df_ctd, self.df_ctriad,
                                    self.df_dpc, self.df_geary, self.df_mb, self.df_qso], axis=1)
+        if progress_callback:
+            for _ in range(self.seq_num):
+                progress_callback()
 
 
-    def gen_pssm(self):
-        self.df_pssm = create_pssm(self.fasta_file, self.__db_path, evalue=0.001, num_iterations=3, n_jobs=os.cpu_count())
+    def gen_pssm(self, progress_callback=None):
+        self.df_pssm = create_pssm(self.fasta_file, self.__db_path, evalue=0.001, num_iterations=3, n_jobs=os.cpu_count(), progress_callback=progress_callback)
 
-    def gen_aaindex(self):
-        self.df_aaindex = get_important_aaindex_617_by_fasta(self.fasta_file)
+    def gen_aaindex(self, progress_callback=None):
+        self.df_aaindex = get_important_aaindex_617_by_fasta(self.fasta_file, progress_callback=progress_callback)
 
     def combine_features(self):
         self.df_total = pd.concat([self.df_pssm, self.df_protr, self.df_aaindex], axis=1)

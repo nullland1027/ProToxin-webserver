@@ -16,3 +16,4 @@ class Success:
 class Error:
     INVALID_FILE = "❌ Invalid FASTA file. Please check the format and content."
     INVALID_AA = "❌ Invalid amino acids found in the sequence. Should remove BJOUXZ."
+    TOO_MANY_SEQUENCES = "❌ Too many sequences. Please limit to 100 sequences."
