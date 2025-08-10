@@ -8,3 +8,11 @@ font="sans serif"
 
 [server]
 maxUploadSize = 1  # 1MB
+# 让 Streamlit 知道它的 URL 基础路径是什么
+# 注意：这里的值是 "protoxin"，前后都不要加斜杠
+baseUrlPath="protoxin"
+
+address="0.0.0.0"
+
+# 以服务形式在后台运行时，建议设置为 true
+headless = true
