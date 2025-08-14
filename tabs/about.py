@@ -5,11 +5,16 @@ def show_about():
     st.title("About ProToxin")
 
     st.markdown("""
+    
+    Toxins are naturally poisonous small compounds, peptides and proteins which are produced in all three kingdoms. We developed a novel machine learning-based predictor for detecting protein toxins from their sequences. The gradient boosting method was trained on carefully selected training data. Extensive feature selection was made, starting with 2,614 features. Finally, there were 88 features. Comparison to available predictors indicated that ProToxin showed significant improvement compared to state-of-the-art predictors. On a blind test dataset, the accuracy was 0.906, the Matthews correlation coefficient was 0.796, and the overall performance measure was 0.796.
+    """)
+
+    st.markdown("""
     ## Citing ProToxin
 
-    PON-P3 was developed by Haohan Zhang, Yang Yang and Mauno Vihinen.
+    ProToxin was developed by Haohan Zhang, Yang Yang and Mauno Vihinen.
 
-    Manuscript describing the method has been submitted.
+    The manuscript describing the method has been submitted.
 
     In the meantime, cite the URL of the predictor.
 
@@ -30,13 +35,13 @@ def show_about():
 
     Datasets were obtained with extensive data mining.
 
-    [Download dataset](https://drive.google.com/drive/folders/19vRYJw3JuLg0hYpwIUaMeIVm-VC8Vx11?usp=sharing)
+    [Download the dataset](https://drive.google.com/drive/folders/19vRYJw3JuLg0hYpwIUaMeIVm-VC8Vx11?usp=sharing)
 
     ## Contact
 
     If you have any problems, please contact:
     
-    Prof. Yang Yang: [yang.yang@example.edu](mailto:yang.yang@example.edu)
+    Prof. Yang Yang, Suzhou Key Lab of Multi-modal Data Fusion and Intelligent Healthcare, China: [yyang@suda.edu.cn](mailto:yyang@suda.edu.cn)
     
-    Prof. Mauno Vihinen, Protein Structure and Bioinformatics Research group, Lund University, Sweden: [mauno.vihinen@example.edu](mailto:mauno.vihinen@example.edu)
+    Prof. Mauno Vihinen, Protein Structure and Bioinformatics Research group, Lund University, Sweden: [mauno.vihinen@med.lu.se](mailto:mauno.vihinen@med.lu.se)
     """)

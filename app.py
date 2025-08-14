@@ -33,11 +33,10 @@ def welcome_section():
     with col1:
         st.markdown("""
         ProToxin is a machine learning-based predictor for detecting protein toxins from sequences. 
-        It is based on a machine learning algorithm, gradient boosting. ProToxin is a fast and efficient 
-        method and is freely available. It can be used for small and large numbers of sequences.
+        It is based on a machine learning algorithm, gradient boosting. 
+        ProToxin is a fast and efficient method and is freely available. It can be used for small and large numbers of sequences.
 
-        ProToxin was developed in the groups of Prof. Yang Yang, Suzhou Key Lab of Multi-modal Data Fusion and Intelligent Healthcare, 
-        Suzhou City University and Prof. Mauno Vihinen, Protein Structure and Bioinformatics Research group, Lund University, Sweden.
+        ProToxin was developed in the groups of Prof. Yang Yang, Suzhou Key Lab of Multi-modal Data Fusion and Intelligent Healthcare, Suzhou City University and Prof. Mauno Vihinen, Protein Structure and Bioinformatics Research group, Lund University, Sweden.
         """)
 
     with col2:
